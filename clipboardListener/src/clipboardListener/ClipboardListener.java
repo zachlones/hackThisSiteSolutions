@@ -31,7 +31,7 @@ class ClipboardListener extends Thread implements ClipboardOwner {
    */
   public void lostOwnership(Clipboard c, Transferable t) {
 	  try {  
-		  Thread.sleep(20);   //Sleeping for a short amount of time reduces problems where another process is also altering clipboard contents
+		  Thread.sleep(50);   //Sleeping for a short amount of time reduces problems where another process is also altering clipboard contents
 	  } catch(Exception e) {  
 		  System.out.println("Exception: " + e);  
 	  }  
@@ -49,17 +49,15 @@ class ClipboardListener extends Thread implements ClipboardOwner {
    */
   Transferable processContents(Transferable t) {
 	  String result = "";
-	  boolean hasTransferableText = (t != null) && t.isDataFlavorSupported(DataFlavor.stringFlavor);
+	  boolean hasImage = (t != null) && t.isDataFlavorSupported(DataFlavor.imageFlavor);
 	 // System.out.println(t.isDataFlavorSupported(DataFlavor.stringFlavor));
 	  //System.out.println("Processing: " + t.toString());  
-	  if (hasTransferableText) {
-		  System.out.println("Has transferable text");
+	  if (hasImage) {
+		  System.out.println("Has image");
 		  try {
-			  result = (String)t.getTransferData(DataFlavor.stringFlavor);
-			  System.out.println(result);
-			  Unscrambler u = new Unscrambler(result);
-			  result = u.toString();
-			  System.out.println(result);
+			  ImageAnalyzer i = new ImageAnalyzer(t);
+			  result = i.toString();
+			  System.out.println("Completed");
 		  }
 		  catch (UnsupportedFlavorException e){
 			  e.printStackTrace();
@@ -72,7 +70,7 @@ class ClipboardListener extends Thread implements ClipboardOwner {
 		  return t;
 	  }
   }  
- 
+  
  /**
   * Sets the contents of the clipboard and sets this as the owner of the clipboard
   * @param t
