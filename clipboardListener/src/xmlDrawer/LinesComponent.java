@@ -1,4 +1,4 @@
-package XMLDrawer;
+package xmlDrawer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

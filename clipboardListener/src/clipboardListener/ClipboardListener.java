@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.dom4j.DocumentException;
 
-import XMLDrawer.XMLDrawer;
+import xmlDrawer.XMLDrawer;
    
 
 /**

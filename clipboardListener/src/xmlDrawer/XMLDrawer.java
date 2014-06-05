@@ -1,4 +1,4 @@
-package XMLDrawer;
+package xmlDrawer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -7,8 +7,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
@@ -20,12 +18,13 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+
+import utils.FileUtils;
 
 /**
  * A class which draws the answer to challenge 4 of HackThisSite.org's programming challenges
@@ -51,7 +50,7 @@ public class XMLDrawer {
 			//File zipped = File.createTempFile("drawme", ".bz2");
 			File zipped = new File("C:\\Users\\Zach\\Downloads\\"+fileLocation);
 			System.out.println(zipped.getAbsolutePath());
-			xml = unzip(zipped);
+			xml = FileUtils.unzip(zipped);
 			
 		}
 		JFrame testFrame = new JFrame();
@@ -74,7 +73,7 @@ public class XMLDrawer {
 	public void parseXML() throws DocumentException{
 		Document parsed = parse();
 		
-		bar(parsed);
+		generateGraph(parsed);
 	}
 	
 	public Document parse() throws DocumentException {
@@ -82,7 +81,7 @@ public class XMLDrawer {
         Document document = reader.read(xml);
         return document;
     }
-	public void bar(Document document) throws DocumentException {
+	public void generateGraph(Document document) throws DocumentException {
 
         Element root = document.getRootElement();
 
@@ -173,67 +172,4 @@ public class XMLDrawer {
         	comp.addArc(xCenter, radius, arcStart, yCenter, arcExtend, color);
         }
      }
-	/**
-	 * A helper method that downloads a file and saves it to the specified output file path
-	 * Shamelessly stolen from: https://stackoverflow.com/questions/14413774/download-file-via-http-with-unknown-length-with-java
-	 * @param url
-	 * @param outputFile
-	 * @return Returns true or false if it was successful
-	 * @throws IOException 
-	 */
-	public static boolean downloadFile(URL url, File outputFile) throws IOException {
-		boolean success = true;
-		InputStream is = null;
-		FileOutputStream fos = null;
-		try {
-			URLConnection urlConn = url.openConnection();//connect
-
-			is = urlConn.getInputStream();               //get connection inputstream
-			fos = new FileOutputStream(outputFile);   //open outputstream to local file
-
-			byte[] buffer = new byte[4096];	//declare 4KB buffer
-			int len;
-
-			//while we have availble data, continue downloading and storing to local file
-			while ((len = is.read(buffer)) > 0) {  
-				fos.write(buffer, 0, len);
-			}
-		} catch (Exception e){
-			success = false;
-			e.printStackTrace();
-		}finally {
-
-			try {
-				if (is != null) {
-					is.close();
-				}
-			} finally {
-				if (fos != null) {
-					fos.close();
-				}
-			}
-		}
-		return success;
-	}
-	
-	/**
-	 * A method which decompresses the file
-	 * @param zipped the zipped xml file
-	 * @return the unzipped xml file
-	 * @throws IOException
-	 */
-	public static File unzip(File zipped) throws IOException{
-		File xml = File.createTempFile("uncompressed", ".xml");
-		FileInputStream in = new FileInputStream(zipped);
-		FileOutputStream out = new FileOutputStream(xml);
-		BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
-		final byte[] buffer = new byte[4096];
-		int n = 0;
-		while (-1 != (n = bzIn.read(buffer))) {
-		  out.write(buffer, 0, n);
-		}
-		out.close();
-		bzIn.close();
-		return xml;
-	}
 }
