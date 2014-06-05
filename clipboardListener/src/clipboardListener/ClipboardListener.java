@@ -3,6 +3,10 @@ package clipboardListener;
 import java.awt.*;  
 import java.awt.datatransfer.*;  
 import java.io.IOException;
+
+import org.dom4j.DocumentException;
+
+import XMLDrawer.XMLDrawer;
    
 
 /**
@@ -36,7 +40,12 @@ class ClipboardListener extends Thread implements ClipboardOwner {
 		  System.out.println("Exception: " + e);  
 	  }  
 	  Transferable contents = sysClip.getContents(this);
-	  contents = processContents(contents);  
+	  try {
+		contents = processContents(contents);
+	} catch (DocumentException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}  
 	  regainOwnership(contents);  
   }  
   
@@ -46,17 +55,18 @@ class ClipboardListener extends Thread implements ClipboardOwner {
    * otherwise the original contents are returned
    * @param t the current clipboard's contents
    * @return the modified contents
+ * @throws DocumentException 
    */
-  Transferable processContents(Transferable t) {
+  Transferable processContents(Transferable t) throws DocumentException {
 	  String result = "";
-	  boolean hasImage = (t != null) && t.isDataFlavorSupported(DataFlavor.imageFlavor);
+	  boolean hasText = (t != null) && t.isDataFlavorSupported(DataFlavor.stringFlavor);
 	 // System.out.println(t.isDataFlavorSupported(DataFlavor.stringFlavor));
 	  //System.out.println("Processing: " + t.toString());  
-	  if (hasImage) {
-		  System.out.println("Has image");
+	  if (hasText) {
+		  System.out.println("Has text");
 		  try {
-			  ImageAnalyzer i = new ImageAnalyzer(t);
-			  result = i.toString();
+			  XMLDrawer x = new XMLDrawer(t);
+			  //result = i.toString();
 			  System.out.println("Completed");
 		  }
 		  catch (UnsupportedFlavorException e){
@@ -64,7 +74,8 @@ class ClipboardListener extends Thread implements ClipboardOwner {
 		  } catch (IOException e) {
 			  e.printStackTrace();
 		  }
-		  return new StringSelection(result);
+		  return t;
+		  //return new StringSelection(result);
 	  }
 	  else{
 		  return t;
