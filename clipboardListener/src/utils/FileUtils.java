@@ -12,13 +12,11 @@ public class FileUtils {
 	/**
 	 * A method which decompresses the file
 	 * @param zipped the zipped xml file
-	 * @return the unzipped xml file
 	 * @throws IOException
 	 */
-	public static File unzip(File zipped) throws IOException{
-		File xml = File.createTempFile("uncompressed", ".xml");
-		FileInputStream in = new FileInputStream(zipped);
-		FileOutputStream out = new FileOutputStream(xml);
+	public static boolean unzip(File zipped, File unzipped){
+		try{FileInputStream in = new FileInputStream(zipped);
+		FileOutputStream out = new FileOutputStream(unzipped);
 		BZip2CompressorInputStream bzIn = new BZip2CompressorInputStream(in);
 		final byte[] buffer = new byte[4096];
 		int n = 0;
@@ -26,8 +24,11 @@ public class FileUtils {
 		  out.write(buffer, 0, n);
 		}
 		out.close();
-		bzIn.close();
-		return xml;
+		bzIn.close();}
+		catch(Exception e){
+			return false;
+		}
+		return true;
 	}
 
 }

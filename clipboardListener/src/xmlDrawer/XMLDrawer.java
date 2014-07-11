@@ -49,8 +49,9 @@ public class XMLDrawer {
 			String fileLocation = (String)t.getTransferData(DataFlavor.stringFlavor);
 			//File zipped = File.createTempFile("drawme", ".bz2");
 			File zipped = new File("C:\\Users\\Zach\\Downloads\\"+fileLocation);
+			xml = File.createTempFile("unzipped", ".xml");
 			System.out.println(zipped.getAbsolutePath());
-			xml = FileUtils.unzip(zipped);
+			FileUtils.unzip(zipped, xml);
 			
 		}
 		JFrame testFrame = new JFrame();
