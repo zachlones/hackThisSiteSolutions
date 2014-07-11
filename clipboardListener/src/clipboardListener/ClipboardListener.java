@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.dom4j.DocumentException;
 
+import StringManipulator.StringManipulator;
 import xmlDrawer.XMLDrawer;
    
 
@@ -65,8 +66,8 @@ class ClipboardListener extends Thread implements ClipboardOwner {
 	  if (hasText) {
 		  System.out.println("Has text");
 		  try {
-			  XMLDrawer x = new XMLDrawer(t);
-			  //result = i.toString();
+			  StringManipulator x = new StringManipulator(t);
+			  result = x.toString();
 			  System.out.println("Completed");
 		  }
 		  catch (UnsupportedFlavorException e){
@@ -74,8 +75,8 @@ class ClipboardListener extends Thread implements ClipboardOwner {
 		  } catch (IOException e) {
 			  e.printStackTrace();
 		  }
-		  return t;
-		  //return new StringSelection(result);
+		  //return t;
+		 return new StringSelection(result);
 	  }
 	  else{
 		  return t;
